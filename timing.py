@@ -42,6 +42,26 @@ def spectrogram(sound):
             pos += (NFFT - OVERLAP)
     return spec/np.max(spec)#正規化して返す
 
+
+def spectrogram2(sound_data, sampling_rate, window_size, overlap):#スペクトログラム計算
+
+    frame_length = len(sound_data) #wavフレームの全フレーム数
+    step = int(frame_length / (window_size - overlap)) #分割数
+    step_size = window_size - overlap #1分割のサイズ
+
+    spectrogram = []
+
+    for count in range(step-1):
+        piv = count * step_size
+        wave_cal = sound_data[piv:piv+window_size] * np.hamming(window_size)
+        spec = np.abs(np.fft.fft(wave_cal, window_size))[:int(window_size/2) ]
+        spectrogram.append(spec)
+
+    spectrogram = np.array(spectrogram)
+    return spectrogram/np.max(spectrogram)#正規化して返す
+
+
+
 def time(sound):
     sampling_rate = sound.getframerate()
     NFFT = 44#フレームの大きさ
